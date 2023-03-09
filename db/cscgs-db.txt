@@ -1,0 +1,93 @@
+/// -- LEVEL 1
+//// -- Schemas, Tables and References
+
+// Creating tables
+// You can define the tables with full schema names
+Table cscgs.game as G{
+  id int [pk, increment]
+  name varchar
+  status int // 0 - init, 1 - started, 2 - pused, 3 -ended
+  facilitator_user_id int [ref: > GU.id]
+  description varchar
+  create_time timestamp
+  start_time timestamp
+  end_time timestamp
+}
+
+// If schema name is omitted, it will default to "public" schema.
+Table cscgs.round as R {
+  id int [pk, increment] // auto-increment
+  game_id int [ref: > G.id]
+  name varchar
+  status int // 0 - init, 1 - started, 2 - pused, 3 -ended
+  description varchar
+  create_time timestamp
+  start_time timestamp
+  end_time timestamp
+}
+
+Table cscgs.period as P {
+  id int [pk, increment] // auto-increment
+  rount_id int [ref: > R.id]
+  name varchar
+  status int // 0 - init, 1 - started, 2 - pused, 3 -ended
+  description varchar
+  create_time timestamp
+  start_time timestamp
+  end_time timestamp
+}
+
+Table cscgs.user as U {
+  id int [pk, increment] // auto-increment
+  name varchar
+  email varchar
+  description varchar
+  create_time timestamp
+}
+
+Table cscgs.team as T {
+  id int [pk, increment] // auto-increment
+  game_id int [ref: > G.id]
+  name varchar
+  description varchar
+  order int
+  create_time timestamp
+}
+
+Table cscgs.game_user as GU {
+  id int [pk, increment] // auto-increment
+  user_id int [ref: > U.id]
+  team_id int [ref: > T.id]
+  role int // 0, 1, 2, 3
+  partner boolean // partner is readonly
+  description varchar
+  create_time timestamp
+}
+
+Table cscgs.order as O {
+  id int [pk, increment] // auto-increment
+  game_user_id int [ref: > T.id]
+  period_id int [ref: > P.id]
+  num int
+  description varchar
+  create_time timestamp
+}
+
+Table cscgs.delivery as D {
+  id int [pk, increment] // auto-increment
+  game_user_id int [ref: > GU.id]
+  period_id int [ref: > P.id]
+  num int
+  description varchar
+  create_time timestamp
+}
+
+Table cscgs.inventory as I {
+  id int [pk, increment] // auto-increment
+  game_user_id int [ref: > GU.id]
+  period_id int [ref: > P.id]
+  num int
+  description varchar
+  create_time timestamp
+}
+
